@@ -39,7 +39,8 @@ class Airtel(object):
         https://<IP><Port>/smartapi/services/subscription/v1/activation
         This method activates a subscription for the subscriber identified by the token
         and the channel. Status notification is sent to the subscriber.
-        :return:
+        :param data:
+        :return response:
         """
         expected_keys = ["channel"]
         payload = process_data(expected_keys, data)
@@ -47,6 +48,22 @@ class Airtel(object):
         r = self.make_request(url, payload, "POST")
         if r.status_code != 200:
             logger.error("Activate Subscription has not been completed")
+        response = r.json()
+        return response
+
+    def deactivate_subscription(self, data):
+        """
+        Deactivate Subscription:
+        This method deactivates a subscription for the subscriber. Status notification is sent to the subscriber.
+        :param data:
+        :return response:
+        """
+        expected_keys = ["address", "productId"]
+        payload = process_data(expected_keys, data)
+        url = URL[self.env][self.version]["deactivate_subscription"]
+        r = self.make_request(url, payload, "POST")
+        if r.status_code != 200:
+            logger.error("Deactivate Subscription has not been completed")
         response = r.json()
         return response
 
