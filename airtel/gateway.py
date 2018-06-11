@@ -12,7 +12,7 @@ from airtel.urls import URL
 logger = logging.getLogger()
 
 
-class Airtel(object):
+class Base(object):
     def __init__(self, access_token, env=os.environ.get('ENV'), version="v1", timeout=None):
         self.headers = {"Authorization": "Bearer %s" % access_token}
         self.env = env
@@ -33,6 +33,8 @@ class Airtel(object):
         else:
             return requests.request(method, url, headers=self.headers, json=payload)
 
+
+class Subscription(Base):
     def activate_subscription(self, data):
         """
         Activate Subscription:
@@ -64,6 +66,26 @@ class Airtel(object):
         r = self.make_request(url, payload, "POST")
         if r.status_code != 200:
             logger.error("Deactivate Subscription has not been completed")
+        response = r.json()
+        return response
+
+
+class Payment(Base):
+    def charge_subscriber(self, data):
+        """
+        Charge a subscriber:
+        https://<IP><Port>/smartapi/services/payment/v1/charge
+        This method charges a subscriber for a service provided by your application.
+        By default the charge will be applied immediately and a suitable response returned to the initial request.
+        :param data:
+        :return response:
+        """
+        expected_keys = ["channel", "cpTransactionId", "resourceUrl", "amount"]
+        payload = process_data(expected_keys, data)
+        url = URL[self.env][self.version]["charge_subscriber"]
+        r = self.make_request(url, payload, "POST")
+        if r.status_code != 200:
+            logger.error("Charge subscriber has not been completed")
         response = r.json()
         return response
 
