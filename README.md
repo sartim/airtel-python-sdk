@@ -1,1 +1,1 @@
-# airtel-money-python-sdk
+# airtel-python-sdk
