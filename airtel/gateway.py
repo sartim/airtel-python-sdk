@@ -7,12 +7,12 @@ import os
 import logging
 import requests
 
-from airtel_money.urls import URL
+from airtel.urls import URL
 
 logger = logging.getLogger()
 
 
-class AirtelMoney(object):
+class Airtel(object):
     def __init__(self, access_token, env=os.environ.get('ENV'), version="v1", timeout=None):
         self.headers = {"Authorization": "Bearer %s" % access_token}
         self.env = env
