@@ -56,7 +56,8 @@ class Subscription(Base):
     def deactivate_subscription(self, data):
         """
         Deactivate Subscription:
-        This method deactivates a subscription for the subscriber. Status notification is sent to the subscriber.
+        This method deactivates a subscription for the subscriber.
+        Status notification is sent to the subscriber.
         :param data:
         :return response:
         """
@@ -76,7 +77,8 @@ class Payment(Base):
         Charge a subscriber:
         https://<IP><Port>/smartapi/services/payment/v1/charge
         This method charges a subscriber for a service provided by your application.
-        By default the charge will be applied immediately and a suitable response returned to the initial request.
+        By default the charge will be applied immediately and a suitable response
+        returned to the initial request.
         :param data:
         :return response:
         """
@@ -84,6 +86,25 @@ class Payment(Base):
         payload = process_data(expected_keys, data)
         url = URL[self.env][self.version]["charge_subscriber"]
         r = self.make_request(url, payload, "POST")
+        if r.status_code != 200:
+            logger.error("Charge subscriber has not been completed")
+        response = r.json()
+        return response
+
+
+class OperatorDiscovery(Base):
+    def discovery(self, data):
+        """
+        This API enables the partners to fetch the operator and circle details for
+        the given mobile number.
+        http://<IP>:<Port>/wli/sb/transports/http?siNumber=xxxxxxxxxx&lob=Mobility
+        :param data:
+        :return:
+        """
+        expected_keys = ["channel", "cpTransactionId", "resourceUrl", "amount"]
+        payload = process_data(expected_keys, data)
+        url = URL[self.env][self.version]["charge_subscriber"]
+        r = self.make_request(url, payload, "GET")
         if r.status_code != 200:
             logger.error("Charge subscriber has not been completed")
         response = r.json()
