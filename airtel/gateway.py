@@ -3,6 +3,7 @@
 """
 Airtel Money Rest API for Python
 """
+import json
 import os
 import logging
 import requests
@@ -12,7 +13,7 @@ from airtel.urls import URL
 logger = logging.getLogger()
 
 
-class Base(object):
+class RequestHandler:
     def __init__(self, access_token, env=os.environ.get('ENV'), version="v1", timeout=None):
         self.headers = {"Authorization": "Bearer %s" % access_token}
         self.env = env
@@ -34,9 +35,43 @@ class Base(object):
             return requests.request(method, url, headers=self.headers, json=payload)
 
 
-class Subscription(Base):
-    def activate_subscription(self, data):
+class Auth:
+    def __init__(self, token, env=os.environ.get('ENV'), version="v1", timeout=None):
+        self.headers = {
+            "Authorization": "Basic %s" % token,
+            "Content-type": "application/x-www-form-urlencoded"
+        }
+        self.env = env
+        self.version = version
+        self.timeout = timeout
+
+    def generate_access_token(self):
         """
+        https://<IP><Port>/smartapi/services/oauth/v1/token
+        :return:
+        """
+        url = URL[self.env][self.version]["activate_subscription"]
+        data = {
+            "grant_type": "authorization_code&client_id=d6340cac48f764ae2735aa3b0220c762&redire",
+            "ct_uri": "http://merchant.site.com/webservice/callback&code=550e8400-e29b-41d4- a716-446655440000",
+            "code": "",
+            "redirect_uri": "client_id"
+        }
+        r = requests.request("POST", url, headers=self.headers, json=json.dumps(data), timeout=self.timeout)
+        return r
+
+
+class Subscription:
+    def __init__(self):
+        pass
+
+    @staticmethod
+    def request(access_token):
+        base = RequestHandler(access_token)
+        return base
+
+    def activate_subscription(self, data):
+        """,
         Activate Subscription:
         https://<IP><Port>/smartapi/services/subscription/v1/activation
         This method activates a subscription for the subscriber identified by the token
@@ -70,7 +105,7 @@ class Subscription(Base):
         return response
 
 
-class Payment(Base):
+class Payment:
     def charge_subscriber(self, data):
         """
         Charge a subscriber:
