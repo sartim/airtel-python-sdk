@@ -11,7 +11,7 @@ setup(name='airtel-python-sdk',
       url='https://github.com/sartim/airtel-python-sdk',
       author='sartim',
       license='MIT',
-      packages=['airtel'],
+      packages=['airtel', ],
       install_requires=['requests', ],
       zip_safe=False
       )
