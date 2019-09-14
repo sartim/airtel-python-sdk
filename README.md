@@ -1,4 +1,7 @@
-# airtel-python-sdk
+# Airtel Smart API SDK
+
+Provides a set of classes to build subscription, payment 
+and operator discovery enterprise APIs
 
 _Export environment variables_
 
